@@ -56,8 +56,15 @@ void printList(Node *head)
  */
 int getLength(Node *head)
 {
-    // TODO
-    return 0;
+    Node*current =head;
+    int numberofnodes=0;
+     while (current != nullptr)
+        {
+            numberofnodes++;
+            current =current->next;
+        }
+        return numberofnodes;
+ 
 }
 
 /**
@@ -68,7 +75,9 @@ int getLength(Node *head)
  */
 void insertAtFront(Node *&head, int value)
 {
-    // TODO
+    Node* newNode = new Node(value);
+    newNode->next=head;
+    head=newNode;
 }
 
 /**
@@ -77,9 +86,18 @@ void insertAtFront(Node *&head, int value)
  * @param value Value to store in the new node.
  * @return void
  */
-void insertAtEnd(Node *&head, int value)
-{
-    // TODO
+void insertAtEnd(Node *&head, int value) {
+
+    Node* newNode = new Node(value);
+    if (head == nullptr) {
+        head = newNode;
+        return;
+    }
+    Node* current = head;
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+    current->next = newNode;
 }
 /**
  * Runs the linked-list test cases.
@@ -94,10 +112,31 @@ void insertAtEnd(Node *&head, int value)
  * @param position Index at which to insert the value.
  * @return void
  */
-void insertAtPosition(Node *&head, int value, int position)
-{
-    // TODO
+void insertAtPosition(Node *&head, int value, int position) {
+    if (position < 0) {
+        return;
+    }
+    Node* newNode = new Node(value);
+
+    if (position == 0) {
+        newNode->next = head;
+        head = newNode;
+        return;
+    }
+    Node* current = head;
+    for (int i = 0; i < position - 1 && current != nullptr; i++) {
+        current = current->next;
+    }
+
+    if (current == nullptr) {
+        delete newNode;
+        return;
+    }
+
+    newNode->next = current->next;
+    current->next = newNode;
 }
+
 
 /**
  * Checks whether value occurs in the list.
