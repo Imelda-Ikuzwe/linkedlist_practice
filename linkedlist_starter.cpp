@@ -112,25 +112,20 @@ void insertAtEnd(Node *&head, int value) {
  * @param position Index at which to insert the value.
  * @return void
  */
+
+
 void insertAtPosition(Node *&head, int value, int position) {
-    if (position < 0) {
-        return;
-    }
     Node* newNode = new Node(value);
 
-    if (position == 0) {
+    if (position <= 0 || head == nullptr) {
         newNode->next = head;
         head = newNode;
         return;
     }
-    Node* current = head;
-    for (int i = 0; i < position - 1 && current != nullptr; i++) {
-        current = current->next;
-    }
 
-    if (current == nullptr) {
-        delete newNode;
-        return;
+    Node* current = head;
+    for (int i = 0; i < position - 1 && current->next != nullptr; i++) {
+        current = current->next;
     }
 
     newNode->next = current->next;
@@ -146,9 +141,17 @@ void insertAtPosition(Node *&head, int value, int position) {
  */
 bool search(Node *head, int value)
 {
-    // TODO
+    Node* current = head;
+
+    while (current != nullptr) {
+        if (current->data == value) {
+            return true;
+        }
+        current = current->next;
+    }
     return false;
 }
+
 
 /** PART B: Deleting nodes. Remember to use delete. */
 
@@ -159,8 +162,15 @@ bool search(Node *head, int value)
  */
 void deleteFront(Node *&head)
 {
-    // TODO
+    if (head == nullptr) {
+        return;
+    }
+
+    Node* firstfront = head;
+    head = head->next;
+    delete firstfront;
 }
+
 
 /**
  * Removes the last node, if the list is not empty.
@@ -169,8 +179,22 @@ void deleteFront(Node *&head)
  */
 void deleteEnd(Node *&head)
 {
-    // TODO
+    if(head==nullptr){
+        return;
+    }
+    if(head->next==nullptr){
+        delete head;
+        head=nullptr;
+        return;
+    }
+    Node*current=head;
+    while(current->next->next!=nullptr){
+        current=current->next;
+    }
+    delete current->next;
+    current->next=nullptr;
 }
+
 
 /**
  * Removes the first node whose data equals value.
@@ -180,7 +204,29 @@ void deleteEnd(Node *&head)
  */
 bool deleteValue(Node *&head, int value)
 {
-    // TODO
+    if (head == nullptr) {
+    return false;
+}
+
+    if (head->data == value) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        return true;
+    }
+
+    Node* current = head;
+    while (current->next != nullptr && current->next->data != value) {
+        current = current->next;
+    }
+
+    if (current->next != nullptr) {
+        Node* temp = current->next;
+        current->next = current->next->next;
+        delete temp;
+        return true;
+    }
+
     return false;
 }
 
@@ -193,8 +239,26 @@ bool deleteValue(Node *&head, int value)
  */
 void removeDuplicates(Node *head)
 {
-    // TODO
+    Node*current=head;
+
+    while (current != nullptr) {
+        Node* runner = current;
+
+        while (runner->next != nullptr) {
+            if (runner->next->data == current->data) {
+                Node* temp = runner->next;
+                runner->next = runner->next->next;
+                delete temp;
+            } else {
+                runner = runner->next;
+            }
+        }
+
+        current = current->next;
+    }
 }
+
+
 
 /**
  * Reverses the list in place without creating new nodes.
@@ -203,7 +267,17 @@ void removeDuplicates(Node *head)
  */
 void reverseList(Node *&head)
 {
-    // TODO
+    Node* prev = nullptr;
+    Node* current = head;
+    Node* next = nullptr;
+
+    while (current != nullptr) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    head = prev;
 }
 
 /**
@@ -213,8 +287,19 @@ void reverseList(Node *&head)
  */
 int findMiddle(Node *head)
 {
-    // TODO
+    if (head == nullptr) {
     return -1;
+}
+
+    Node* slow = head;
+    Node* fast = head;
+
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return slow->data;
 }
 
 /**
@@ -224,8 +309,19 @@ int findMiddle(Node *head)
  */
 int sumList(Node *head)
 {
-    // TODO
-    return 0;
+    if (head == nullptr) {
+        return 0;
+    }
+
+    int sum = 0;
+    Node* current = head;
+
+    while (current != nullptr) {
+        sum += current->data;
+        current = current->next;
+    }
+
+    return sum;
 }
 
 /**
@@ -235,8 +331,13 @@ int sumList(Node *head)
  */
 void clearList(Node *&head)
 {
-    // TODO
+    while (head != nullptr) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
 }
+
 
 /** BONUS (optional). */
 
@@ -246,10 +347,27 @@ void clearList(Node *&head)
  * @param value Value to insert.
  * @return void
  */
-void insertSorted(Node *&head, int value)
+
+    void insertSorted(Node *&head, int value)
 {
-    // TODO (bonus)
+    Node* newNode = new Node(value);
+
+    if (head == nullptr || value <= head->data) {
+        newNode->next = head;
+        head = newNode;
+        return;
+    }
+
+    Node* current = head;
+    while (current->next != nullptr && current->next->data < value) {
+        current = current->next;
+    }
+
+    newNode->next = current->next;
+    current->next = newNode;
 }
+
+
 
 /** TESTS: do not modify below this line. */
 int main()
